@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Petualangan Menyapa bersama Kiko</title>
+    <!-- Tailwind CSS untuk penataan responsif modern -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts untuk tipografi ramah anak dan mudah dibaca -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome untuk ikon menarik -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-image: url('https://i.imgur.com/EPYwVCi.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+        .font-header {
+            font-family: 'Fredoka One', cursive;
+        }
+        /* Efek membal untuk tombol aksesibilitas */
+        .btn-bounce {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .btn-bounce:active {
+            transform: scale(0.92);
+        }
+        .btn-bounce:hover {
+            transform: translateY(-4px);
+        }
+        /* Animasi berdenyut lembut untuk maskot */
+        @keyframes pulse-glow {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 10px rgba(74, 222, 128, 0.5); }
+            50% { transform: scale(1.03); box-shadow: 0 0 20px rgba(74, 222, 128, 0.8); }
+        }
+        .pulse-guide {
+            animation: pulse-glow 3s infinite ease-in-out;
+        }
+        /* Efek konfeti perayaan */
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            opacity: 0.85;
+            animation: fall linear forwards;
+        }
+        @keyframes fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-between p-4 overflow-x-hidden">
+
+    <!-- Bar Status Suara & Musik di Bagian Atas -->
+    <header class="w-full max-w-2xl bg-white rounded-2xl shadow-md p-3 mb-4 flex items-center justify-between border-4 border-green-200">
+        <div class="flex items-center space-x-2">
+            <span class="text-3xl">🐨</span>
+            <div>
+                <h1 class="font-header text-green-600 text-lg sm:text-xl leading-none">Hai, Aku Kiko!</h1>
+                <p class="text-xs text-gray-500">Ayo belajar menyapa teman!</p>
+            </div>
+        </div>
+        <div class="flex space-x-1 sm:space-x-2">
+            <!-- Tombol Kontrol Musik Latar -->
+            <button onclick="toggleMusic()" id="musicBtn" class="bg-pink-100 hover:bg-pink-200 text-pink-700 p-2 rounded-xl transition duration-200 text-xs sm:text-sm font-bold flex items-center space-x-1">
+                <i class="fas fa-music text-base sm:text-lg"></i>
+                <span id="musicText" class="hidden sm:inline">Musik: Aktif</span>
+            </button>
+            <!-- Tombol Kontrol Suara Panduan -->
+            <button onclick="toggleSound()" id="soundBtn" class="bg-yellow-100 hover:bg-yellow-200 text-yellow-700 p-2 rounded-xl transition duration-200 text-xs sm:text-sm font-bold flex items-center space-x-1">
+                <i class="fas fa-volume-up text-base sm:text-lg"></i>
+                <span id="soundText" class="hidden sm:inline">Suara: Aktif</span>
+            </button>
+            <!-- Tombol Beranda -->
+            <button onclick="backToMainMenu()" id="homeBtn" class="bg-gray-100 hover:bg-gray-200 text-gray-700 p-2 rounded-xl transition duration-200 hidden">
+                <i class="fas fa-home text-base sm:text-lg"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Kontainer Jendela Utama Gim -->
+    <main id="gameWindow" class="w-full max-w-2xl bg-white rounded-3xl shadow-xl border-8 border-yellow-300 p-4 sm:p-6 flex-grow flex flex-col justify-center relative min-h-[480px]">
+        
+        <!-- ==================== LAYAR 1: MENU UTAMA ==================== -->
+        <div id="screenMainMenu" class="flex flex-col items-center justify-center space-y-6 text-center py-6">
+            <div class="relative">
+                <!-- Maskot Kiko Besar -->
+                <div class="w-40 h-40 bg-green-100 rounded-full flex items-center justify-center text-7xl shadow-inner border-4 border-green-300 pulse-guide">
+                    🐨
+                </div>
+                <div class="absolute -bottom-2 -right-2 bg-yellow-400 text-white font-header px-3 py-1 rounded-full text-xs shadow-md border-2 border-white">
+                    Halo!
+                </div>
+            </div>
+
+            <div>
+                <h2 class="font-header text-2xl sm:text-3xl text-green-700 mb-2">Petualangan Menyapa</h2>
+                <p class="text-sm sm:text-base text-gray-600 px-4 max-w-md">
+                    Mari belajar menyapa dalam Bahasa Inggris dengan cara yang mudah dan menyenangkan!
+                </p>
+            </div>
+
+            <!-- Tombol Aksi Ukuran Besar untuk Kemudahan Aksesibilitas -->
+            <div class="flex flex-col space-y-4 w-full max-w-xs">
+                <button onclick="startBelajar()" class="btn-bounce bg-green-500 hover:bg-green-600 text-white font-header text-lg sm:text-xl py-4 px-6 rounded-2xl shadow-lg border-b-8 border-green-700 flex items-center justify-center space-x-3">
+                    <span class="text-2xl">📖</span>
+                    <span>1. BELAJAR DULU</span>
+                </button>
+                <button onclick="startBermain()" class="btn-bounce bg-yellow-400 hover:bg-yellow-500 text-white font-header text-lg sm:text-xl py-4 px-6 rounded-2xl shadow-lg border-b-8 border-yellow-600 flex items-center justify-center space-x-3">
+                    <span class="text-2xl">🎮</span>
+                    <span>2. MAIN KUIS</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- ==================== LAYAR 2: KARTU PINTAR BELAJAR ==================== -->
+        <div id="screenBelajar" class="hidden flex flex-col justify-between h-full space-y-6">
+            <div class="text-center">
+                <span class="bg-green-100 text-green-800 text-xs font-bold px-3 py-1 rounded-full border border-green-300 uppercase">Mode Belajar</span>
+                <h2 class="font-header text-xl sm:text-2xl text-green-700 mt-2">Ketuk Kartu Untuk Mendengar Suara</h2>
+            </div>
+
+            <!-- Kartu Pintar Interaktif -->
+            <div class="flex flex-col items-center justify-center">
+                <div id="flashcard" onclick="playFlashcardVoice()" class="cursor-pointer bg-gradient-to-br from-blue-50 to-indigo-50 hover:from-white hover:to-white p-6 rounded-3xl border-4 border-blue-300 w-full max-w-sm text-center shadow-lg transition duration-300 transform hover:scale-102 flex flex-col items-center space-y-4">
+                    <!-- Ilustrasi Simbol Waktu -->
+                    <div id="flashcardImg" class="text-8xl p-4 bg-white rounded-full shadow-inner border border-blue-100 w-32 h-32 flex items-center justify-center">
+                        🌅
+                    </div>
+                    <!-- Kata Sapaan -->
+                    <div>
+                        <h3 id="flashcardEng" class="font-header text-3xl text-blue-800">Good Morning</h3>
+                        <p id="flashcardInd" class="text-lg text-gray-600 font-bold mt-1">Artinya: Selamat Pagi</p>
+                    </div>
+                    <!-- Tombol Petunjuk Suara -->
+                    <button class="bg-blue-500 text-white px-4 py-2 rounded-full font-bold text-sm flex items-center space-x-2 shadow">
+                        <i class="fas fa-volume-up"></i>
+                        <span>Dengarkan Suara</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Navigasi Kartu -->
+            <div class="flex items-center justify-between w-full max-w-sm mx-auto px-2">
+                <button onclick="prevCard()" id="btnPrevCard" class="btn-bounce bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-3 px-5 rounded-xl text-sm flex items-center space-x-1">
+                    <i class="fas fa-arrow-left"></i> <span>Kembali</span>
+                </button>
+                <div class="text-sm font-bold text-gray-500" id="cardIndicator">
+                    1 / 5
+                </div>
+                <button onclick="nextCard()" id="btnNextCard" class="btn-bounce bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-5 rounded-xl text-sm flex items-center space-x-1">
+                    <span>Lanjut</span> <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+
+            <div class="text-center pt-2">
+                <button onclick="backToMainMenu()" class="text-red-500 font-bold hover:underline text-sm">
+                    <i class="fas fa-times-circle"></i> Selesai Belajar, Kembali ke Menu
+                </button>
+            </div>
+        </div>
+
+        <!-- ==================== LAYAR 3: PERMAINAN KUIS ==================== -->
+        <div id="screenBermain" class="hidden flex flex-col justify-between h-full space-y-4">
+            <!-- Indikator Skor Bintang dan Nomor Soal -->
+            <div class="flex items-center justify-between border-b pb-2">
+                <div class="flex items-center space-x-1 text-yellow-500">
+                    <span class="font-bold text-gray-600 text-sm">Bintang:</span>
+                    <span id="starCount" class="font-header text-lg">0</span>
+                    <span>⭐</span>
+                </div>
+                <div class="text-sm font-bold text-green-700">
+                    Soal <span id="quizNumber">1</span> dari <span id="totalQuiz">5</span>
+                </div>
+            </div>
+
+            <!-- Area Pertanyaan -->
+            <div class="text-center flex flex-col items-center space-y-4 my-2">
+                <!-- Ilustrasi Skenario Menarik -->
+                <div id="quizImg" class="text-8xl p-4 bg-yellow-50 rounded-full border-4 border-yellow-200 w-28 h-28 flex items-center justify-center shadow-inner">
+                    🌅
+                </div>
+                <div>
+                    <h3 id="quizQuestion" class="font-header text-xl sm:text-2xl text-gray-800 px-2">
+                        Kiko bertemu Ibu Guru di pagi hari jam 7. Kiko harus mengucapkan...
+                    </h3>
+                </div>
+            </div>
+
+            <!-- Opsi Jawaban (Berbentuk balok besar yang mudah ditekan) -->
+            <div class="grid grid-cols-1 gap-3 w-full max-w-md mx-auto" id="quizAnswersContainer">
+                <!-- Diisi otomatis melalui Javascript -->
+            </div>
+
+            <!-- Bantuan Audio Soal -->
+            <div class="text-center">
+                <button onclick="readQuestion()" class="bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 px-4 rounded-full text-xs font-bold inline-flex items-center space-x-1">
+                    <i class="fas fa-volume-up text-sm"></i>
+                    <span>Kiko, bacakan soalnya!</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- ==================== LAYAR 4: SELESAI & PERAYAAN ==================== -->
+        <div id="screenSelesai" class="hidden flex flex-col items-center justify-center text-center space-y-6 py-6">
+            <div class="relative">
+                <div class="w-40 h-40 bg-yellow-100 rounded-full flex items-center justify-center text-7xl shadow-lg border-4 border-yellow-300 pulse-guide">
+                    🥳
+                </div>
+                <div class="absolute -top-3 -right-3 text-5xl animate-bounce">👑</div>
+            </div>
+
+            <div>
+                <h2 class="font-header text-3xl text-yellow-500">HEBAT SEKALI!</h2>
+                <p class="text-base text-gray-600 mt-2 max-w-sm px-4">
+                    Kamu telah menyelesaikan semua petualangan menyapa hari ini dengan luar biasa!
+                </p>
+            </div>
+
+            <!-- Tampilan Total Bintang -->
+            <div class="bg-yellow-50 border-2 border-yellow-300 rounded-2xl py-3 px-6 inline-flex items-center space-x-2 shadow-inner">
+                <span class="text-gray-700 font-bold">Total Bintang:</span>
+                <span id="finalStars" class="font-header text-2xl text-yellow-600">5</span>
+                <span class="text-2xl animate-pulse">⭐</span>
+            </div>
+
+            <!-- Tombol Main Kembali atau Menu Utama -->
+            <div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3 w-full max-w-xs sm:max-w-md justify-center">
+                <button onclick="startBermain()" class="btn-bounce bg-yellow-400 hover:bg-yellow-500 text-white font-header py-3 px-6 rounded-xl border-b-4 border-yellow-600 text-base">
+                    <i class="fas fa-redo"></i> MAIN LAGI
+                </button>
+                <button onclick="backToMainMenu()" class="btn-bounce bg-green-500 hover:bg-green-600 text-white font-header py-3 px-6 rounded-xl border-b-4 border-green-700 text-base">
+                    <i class="fas fa-home"></i> MENU UTAMA
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Notifikasi Feedback Jawaban -->
+    <div id="feedbackToast" class="fixed top-24 left-1/2 transform -translate-x-1/2 z-50 transition-all duration-300 ease-out pointer-events-none scale-0 opacity-0 max-w-xs w-full">
+        <div id="feedbackBox" class="rounded-2xl p-4 shadow-2xl border-4 flex items-center space-x-3">
+            <span id="feedbackEmoji" class="text-4xl"></span>
+            <div>
+                <h4 id="feedbackTitle" class="font-header text-lg"></h4>
+                <p id="feedbackDesc" class="text-xs"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sistem Audio (Efek Suara & Musik Latar) -->
+    <audio id="bgMusic" src="https://github.com/daffa373hsn/musikgim/raw/refs/heads/main/Annyeong_Perfect_Day.mp3" loop preload="auto"></audio>
+
+    <!-- Footer Edukatif -->
+    <footer class="w-full text-center text-xs text-green-900 font-bold mt-4 bg-white/80 backdrop-blur-sm py-1.5 px-4 rounded-full shadow-sm max-w-xs mx-auto">
+        Sapa Temanmu Setiap Hari • Kelas 9 SMPLB-C Tunagrahita
+    </footer>
+
+    <script>
+        /* VARIABEL NEGARA GIM */
+        let isSoundEnabled = true;
+        let isMusicEnabled = true;
+        let musicStarted = false;
+        let currentScreen = 'screenMainMenu';
+        
+        // Elemen audio
+        const bgMusic = document.getElementById('bgMusic');
+        
+        // Generator Sintesis Suara (TTS)
+        const synth = window.speechSynthesis;
+        let currentVoice = null;
+
+        // Audio Context untuk efek suara (SFX) internal
+        let audioCtx = null;
+        function playTone(freq, type, duration) {
+            if (!isSoundEnabled) return;
+            try {
+                if (!audioCtx) {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = type || 'sine';
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + duration);
+            } catch (e) {
+                console.log("Audio Context belum diaktifkan oleh peramban.");
+            }
+        }
+
+        function playCorrectSound() {
+            // Nada riang untuk jawaban benar
+            playTone(523.25, 'triangle', 0.15); // C5
+            setTimeout(() => playTone(659.25, 'triangle', 0.25), 100); // E5
+        }
+
+        function playWrongSound() {
+            // Nada rendah untuk jawaban salah
+            playTone(220, 'sawtooth', 0.3); // A3
+        }
+
+        // Mulai Musik Latar dengan penanganan pembatasan peramban
+        function startMusic() {
+            if (!musicStarted && isMusicEnabled) {
+                bgMusic.volume = 0.25; // Mengatur volume musik latar lebih rendah agar suara Kiko tetap terdengar jelas
+                bgMusic.play().then(() => {
+                    musicStarted = true;
+                }).catch(e => {
+                    console.log("Menunggu interaksi pengguna untuk memulai musik.");
+                });
+            }
+        }
+
+        // Pengendali Tombol Musik
+        function toggleMusic() {
+            isMusicEnabled = !isMusicEnabled;
+            const musicBtn = document.getElementById('musicBtn');
+            if (isMusicEnabled) {
+                musicBtn.className = "bg-pink-100 hover:bg-pink-200 text-pink-700 p-2 rounded-xl transition duration-200 text-xs sm:text-sm font-bold flex items-center space-x-1";
+                musicBtn.innerHTML = `<i class="fas fa-music text-base sm:text-lg"></i> <span id="musicText" class="hidden sm:inline">Musik: Aktif</span>`;
+                bgMusic.play().catch(e => console.log(e));
+                musicStarted = true;
+            } else {
+                musicBtn.className = "bg-gray-100 hover:bg-gray-200 text-gray-500 p-2 rounded-xl transition duration-200 text-xs sm:text-sm font-bold flex items-center space-x-1";
+                musicBtn.innerHTML = `<i class="fas fa-volume-mute text-base sm:text-lg"></i> <span id="musicText" class="hidden sm:inline">Musik: Mati</span>`;
+                bgMusic.pause();
+            }
+        }
+
+        // Pengendali Tombol Suara Kiko
+        function toggleSound() {
+            isSoundEnabled = !isSoundEnabled;
+            const soundBtn = document.getElementById('soundBtn');
+            if (isSoundEnabled) {
+                soundBtn.className = "bg-yellow-100 hover:bg-yellow-200 text-yellow-700 p-2 rounded-xl transition duration-200 text-xs sm:text-sm font-bold flex items-center space-x-1";
+                soundBtn.innerHTML = `<i class="fas fa-volume-up text-base sm:text-lg"></i> <span id="soundText" class="hidden sm:inline">Suara: Aktif</span>`;
+                playTone(440, 'sine', 0.1);
+            } else {
+                soundBtn.className = "bg-gray-100 hover:bg-gray-200 text-gray-500 p-2 rounded-xl transition duration-200 text-xs sm:text-sm font-bold flex items-center space-x-1";
+                soundBtn.innerHTML = `<i class="fas fa-volume-mute text-base sm:text-lg"></i> <span id="soundText" class="hidden sm:inline">Suara: Mati</span>`;
+                if (synth) synth.cancel();
+            }
+        }
+
+        // Inisialisasi daftar suara TTS
+        function initVoices() {
+            if (!synth) return;
+            setTimeout(() => {
+                const voices = synth.getVoices();
+                currentVoice = voices.find(v => v.lang.startsWith('en')) || voices[0];
+            }, 500);
+        }
+        initVoices();
+
+        function speakText(text, isEnglish = true) {
+            if (!isSoundEnabled || !synth) return;
+            synth.cancel(); // Hentikan ucapan yang sedang berjalan terlebih dahulu
+            
+            const utterance = new SpeechSynthesisUtterance(text);
+            const voices = synth.getVoices();
+            
+            if (isEnglish) {
+                const engVoice = voices.find(v => v.lang.includes('en-US') || v.lang.includes('en-GB'));
+                if (engVoice) utterance.voice = engVoice;
+                utterance.rate = 0.72; // Lambat agar ramah untuk anak tunagrahita
+            } else {
+                const indVoice = voices.find(v => v.lang.includes('id-ID'));
+                if (indVoice) utterance.voice = indVoice;
+                utterance.rate = 0.88;
+            }
+            
+            synth.speak(utterance);
+        }
+
+        function switchScreen(screenId) {
+            document.getElementById('screenMainMenu').classList.add('hidden');
+            document.getElementById('screenBelajar').classList.add('hidden');
+            document.getElementById('screenBermain').classList.add('hidden');
+            document.getElementById('screenSelesai').classList.add('hidden');
+            
+            document.getElementById(screenId).classList.remove('hidden');
+            currentScreen = screenId;
+
+            const homeBtn = document.getElementById('homeBtn');
+            if (screenId === 'screenMainMenu') {
+                homeBtn.classList.add('hidden');
+            } else {
+                homeBtn.classList.remove('hidden');
+            }
+        }
+
+        function backToMainMenu() {
+            if (synth) synth.cancel();
+            switchScreen('screenMainMenu');
+            speakText("Mari bermain lagi!", false);
+        }
+
+        /* DATA & LOGIKA PEMBELAJARAN (FLASHCARD) */
+        const learnData = [
+            { eng: "Good Morning", ind: "Selamat Pagi", emoji: "🌅", desc: "Dipakai di pagi hari saat matahari terbit sampai jam 12 siang." },
+            { eng: "Good Afternoon", ind: "Selamat Siang / Sore", emoji: "☀️", desc: "Dipakai dari setelah jam 12 siang sampai sore hari." },
+            { eng: "Good Evening", ind: "Selamat Malam", emoji: "🌆", desc: "Dipakai saat sore hari mulai gelap/malam hari ketika bertemu teman." },
+            { eng: "Good Night", ind: "Selamat Tidur", emoji: "🌙", desc: "Dipakai di malam hari hanya ketika kita ingin pamit pergi tidur." },
+            { eng: "Goodbye", ind: "Selamat Tinggal", emoji: "👋", desc: "Dipakai ketika kamu mau berpisah pulang dengan teman." }
+        ];
+
+        let currentLearnIndex = 0;
+
+        function startBelajar() {
+            currentLearnIndex = 0;
+            updateLearnCard();
+            switchScreen('screenBelajar');
+            speakText("Ayo kita belajar kartu sapaan. Ketuk kartunya untuk mendengarkan suara.", false);
+        }
+
+        function updateLearnCard() {
+            const data = learnData[currentLearnIndex];
+            document.getElementById('flashcardImg').innerHTML = data.emoji;
+            document.getElementById('flashcardEng').innerText = data.eng;
+            document.getElementById('flashcardInd').innerText = `Artinya: ${data.ind}`;
+            document.getElementById('cardIndicator').innerText = `${currentLearnIndex + 1} / ${learnData.length}`;
+
+            document.getElementById('btnPrevCard').style.opacity = currentLearnIndex === 0 ? "0.4" : "1";
+            document.getElementById('btnPrevCard').disabled = currentLearnIndex === 0;
+            
+            if (currentLearnIndex === learnData.length - 1) {
+                document.getElementById('btnNextCard').innerHTML = `<span>Selesai</span> <i class="fas fa-check-circle"></i>`;
+                document.getElementById('btnNextCard').className = "btn-bounce bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-3 px-5 rounded-xl text-sm flex items-center space-x-1";
+            } else {
+                document.getElementById('btnNextCard').innerHTML = `<span>Lanjut</span> <i class="fas fa-arrow-right"></i>`;
+                document.getElementById('btnNextCard').className = "btn-bounce bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-5 rounded-xl text-sm flex items-center space-x-1";
+            }
+
+            setTimeout(() => {
+                playFlashcardVoice();
+            }, 500);
+        }
+
+        function playFlashcardVoice() {
+            const data = learnData[currentLearnIndex];
+            speakText(data.eng, true);
+        }
+
+        function nextCard() {
+            if (currentLearnIndex < learnData.length - 1) {
+                currentLearnIndex++;
+                updateLearnCard();
+            } else {
+                startBermain();
+            }
+        }
+
+        function prevCard() {
+            if (currentLearnIndex > 0) {
+                currentLearnIndex--;
+                updateLearnCard();
+            }
+        }
+
+        /* DATA & LOGIKA PERMAINAN KUIS */
+        const quizQuestions = [
+            {
+                scenario: "Matahari baru terbit dan jam menunjukkan pukul 7 pagi 🌅 Kiko bertemu guru di sekolah. Apa yang diucapkan?",
+                options: ["Good Morning", "Good Night", "Goodbye"],
+                correct: 0,
+                emoji: "🌅",
+                hint: "Pagi hari kita mengucapkan Good Morning"
+            },
+            {
+                scenario: "Jam menunjukkan pukul 2 siang ☀️ Matahari bersinar terik. Apa yang Kiko katakan saat menyapa temannya?",
+                options: ["Good Morning", "Good Afternoon", "Goodbye"],
+                correct: 1,
+                emoji: "☀️",
+                hint: "Siang atau sore hari kita mengucapkan Good Afternoon"
+            },
+            {
+                scenario: "Sudah malam hari 🌙 Kiko mengantuk dan mau pergi tidur ke kasur. Apa yang diucapkan Kiko ke Ibu?",
+                options: ["Good Afternoon", "Good Morning", "Good Night"],
+                correct: 2,
+                emoji: "🛌",
+                hint: "Sebelum tidur kita mengucapkan Good Night"
+            },
+            {
+                scenario: "Bel sekolah berbunyi 🔔 Kiko mau pulang ke rumah dan melambaikan tangan kepada temannya 👋. Kiko mengucapkan...",
+                options: ["Goodbye", "Good Morning", "Good Evening"],
+                correct: 0,
+                emoji: "👋",
+                hint: "Sampai jumpa dalam bahasa inggris adalah Goodbye"
+            },
+            {
+                scenario: "Kiko bertemu temannya di jalan pada malam hari jam 7 🌆 sebelum tidur. Sapaan akrabnya adalah...",
+                options: ["Good Morning", "Good Evening", "Goodbye"],
+                correct: 1,
+                emoji: "🌆",
+                hint: "Malam hari saat menyapa orang lain gunakan Good Evening"
+            }
+        ];
+
+        let currentQuizIndex = 0;
+        let scoreStars = 0;
+
+        function startBermain() {
+            currentQuizIndex = 0;
+            scoreStars = 0;
+            document.getElementById('starCount').innerText = scoreStars;
+            switchScreen('screenBermain');
+            loadQuizQuestion();
+            speakText("Ayo kita mulai kuis menyapa. Jawab pertanyaan dengan menekan tombol yang besar!", false);
+        }
+
+        function loadQuizQuestion() {
+            const quiz = quizQuestions[currentQuizIndex];
+            
+            document.getElementById('quizNumber').innerText = currentQuizIndex + 1;
+            document.getElementById('totalQuiz').innerText = quizQuestions.length;
+            document.getElementById('quizImg').innerHTML = quiz.emoji;
+            document.getElementById('quizQuestion').innerText = quiz.scenario;
+
+            const container = document.getElementById('quizAnswersContainer');
+            container.innerHTML = '';
+
+            quiz.options.forEach((option, index) => {
+                const btn = document.createElement('button');
+                btn.className = "btn-bounce w-full bg-blue-100 hover:bg-blue-200 text-blue-800 text-lg sm:text-xl font-header py-4 px-6 rounded-2xl border-4 border-blue-300 shadow-md text-center transition duration-200 flex items-center justify-between";
+                
+                btn.innerHTML = `
+                    <span class="bg-blue-300 text-blue-900 rounded-full w-8 h-8 flex items-center justify-center text-xs font-bold mr-2">${index + 1}</span>
+                    <span class="flex-grow">${option}</span>
+                    <i class="fas fa-play text-xs text-blue-400"></i>
+                `;
+                
+                btn.onclick = () => selectAnswer(index);
+                container.appendChild(btn);
+            });
+
+            setTimeout(() => {
+                readQuestion();
+            }, 800);
+        }
+
+        function readQuestion() {
+            const quiz = quizQuestions[currentQuizIndex];
+            speakText(quiz.scenario, false);
+        }
+
+        function selectAnswer(selectedIndex) {
+            const quiz = quizQuestions[currentQuizIndex];
+            const isCorrect = selectedIndex === quiz.correct;
+
+            if (isCorrect) {
+                scoreStars++;
+                document.getElementById('starCount').innerText = scoreStars;
+                playCorrectSound();
+                showFeedback(true, quiz.options[selectedIndex]);
+                triggerMicroConfetti();
+            } else {
+                playWrongSound();
+                showFeedback(false, quiz.options[selectedIndex], quiz.hint);
+            }
+
+            setTimeout(() => {
+                nextQuiz();
+            }, 3000);
+        }
+
+        function showFeedback(isCorrect, selectedText, hintText = "") {
+            const toast = document.getElementById('feedbackToast');
+            const box = document.getElementById('feedbackBox');
+            const emoji = document.getElementById('feedbackEmoji');
+            const title = document.getElementById('feedbackTitle');
+            const desc = document.getElementById('feedbackDesc');
+
+            if (isCorrect) {
+                box.className = "rounded-2xl p-4 shadow-2xl border-4 border-green-400 bg-green-50 text-green-900 flex items-center space-x-3";
+                emoji.innerText = "⭐";
+                title.innerText = "HEBAT! BENAR!";
+                desc.innerText = `Kamu memilih "${selectedText}". Keren!`;
+                speakText("Hebat sekali! Jawabanmu benar!", false);
+            } else {
+                box.className = "rounded-2xl p-4 shadow-2xl border-4 border-red-400 bg-red-50 text-red-900 flex items-center space-x-3";
+                emoji.innerText = "💡";
+                title.innerText = "Ayo Coba Lagi!";
+                desc.innerText = hintText;
+                speakText("Kurang tepat. " + hintText, false);
+            }
+
+            toast.classList.remove('scale-0', 'opacity-0');
+            toast.classList.add('scale-100', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.add('scale-0', 'opacity-0');
+                toast.classList.remove('scale-100', 'opacity-100');
+            }, 2800);
+        }
+
+        function nextQuiz() {
+            if (currentQuizIndex < quizQuestions.length - 1) {
+                currentQuizIndex++;
+                loadQuizQuestion();
+            } else {
+                endGame();
+            }
+        }
+
+        function endGame() {
+            document.getElementById('finalStars').innerText = scoreStars;
+            switchScreen('screenSelesai');
+            speakText(`Selamat! Kamu mendapat ${scoreStars} bintang. Keren banget!`, false);
+            triggerCelebrationConfetti();
+        }
+
+        /* ANIMASI KONFETI */
+        function triggerMicroConfetti() {
+            for (let i = 0; i < 15; i++) {
+                createConfettiPiece();
+            }
+        }
+
+        function triggerCelebrationConfetti() {
+            let duration = 3 * 1000;
+            let end = Date.now() + duration;
+
+            (function frame() {
+                createConfettiPiece();
+                createConfettiPiece();
+                if (Date.now() < end) {
+                    requestAnimationFrame(frame);
+                }
+            }());
+        }
+
+        function createConfettiPiece() {
+            const colors = ['#f59e0b', '#10b981', '#3b82f6', '#ec4899', '#8b5cf6'];
+            const confetti = document.createElement('div');
+            confetti.classList.add('confetti');
+            confetti.style.left = Math.random() * 100 + 'vw';
+            confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            confetti.style.top = '-20px';
+            confetti.style.transform = `scale(${Math.random() * 1.2 + 0.5})`;
+            
+            const duration = Math.random() * 2 + 1.5;
+            confetti.style.animationDuration = duration + 's';
+            
+            document.body.appendChild(confetti);
+
+            setTimeout(() => {
+                confetti.remove();
+            }, duration * 1000);
+        }
+
+        // Pengendali klik pengguna pertama kali untuk mengaktifkan musik latar dan Web Audio API
+        window.onclick = function() {
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            startMusic();
+        };
+
+        // Pesan sambutan ramah saat gim dimuat
+        window.onload = function() {
+            speakText("Selamat datang di Petualangan Menyapa!", false);
+        };
+    </script>
+</body>
+</html>
